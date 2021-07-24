@@ -1,7 +1,5 @@
 package ru.rorshak.profile.adapter
 
-import android.content.ClipData
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.view.LayoutInflater
@@ -18,9 +16,11 @@ class ItemsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             field = value
             notifyDataSetChanged()
         }
+    lateinit var prnt: ViewGroup
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
-        when (viewType) {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        prnt = parent
+        return when (viewType) {
             VIEW_TYPE_HEADER ->
                 ViewHolderHeader(
                     ItemHeaderBinding.inflate(
@@ -49,24 +49,28 @@ class ItemsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 ViewHolderDesc(
                     ItemDescBinding.inflate(
                         LayoutInflater.from(parent.context),
-                    parent,
-                    false)
+                        parent,
+                        false
+                    )
                 )
             VIEW_TYPE_SKILL ->
                 ViewHolderSkill(
                     ItemSkillBinding.inflate(
                         LayoutInflater.from(parent.context),
                         parent,
-                        false)
+                        false
+                    )
                 )
             else -> throw IllegalArgumentException("")
         }
+    }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (val item = items[position]) {
             is Item.Header -> (holder as? ViewHolderHeader)?.onBind(item)
             is Item.withText -> (holder as? ViewHolderText)?.onBind(item)
             is Item.Skill -> (holder as? ViewHolderSkill)?.onBind(item)
+            is Item.Photo -> (holder as? ViewHolderPhoto)?.onBind()
         }
     }
 
@@ -83,10 +87,8 @@ class ItemsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     class ViewHolderSkill(
         private val viewBinding: ItemSkillBinding
-    ) : RecyclerView.ViewHolder(viewBinding.root)
-    {
-        fun onBind(item : Item.Skill)
-        {
+    ) : RecyclerView.ViewHolder(viewBinding.root) {
+        fun onBind(item: Item.Skill) {
             viewBinding.skill.text = item.name
             viewBinding.time.text = item.time
         }
@@ -95,15 +97,16 @@ class ItemsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     class ViewHolderDesc(
         private val viewBinding: ItemDescBinding
     ) : RecyclerView.ViewHolder(viewBinding.root)
-    {
 
-    }
-
-    class ViewHolderPhoto(
+    inner class ViewHolderPhoto(
         private val viewBinding: ItemPhotoBinding
-    ) : RecyclerView.ViewHolder(viewBinding.root)
-    {
-        
+    ) : RecyclerView.ViewHolder(viewBinding.root) {
+        fun onBind() {
+            viewBinding.button.setOnClickListener() {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/rorShaK03"))
+                prnt.context.startActivity(intent)
+            }
+        }
     }
 
     class ViewHolderHeader(
