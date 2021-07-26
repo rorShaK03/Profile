@@ -3,9 +3,12 @@ package ru.rorshak.profile.adapter
 import android.content.Intent
 import android.net.Uri
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
+import ru.rorshak.profile.FilterActivity
 import ru.rorshak.profile.R
 import ru.rorshak.profile.databinding.*
 import ru.rorshak.profile.model.Item
@@ -18,6 +21,8 @@ class ItemsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             notifyDataSetChanged()
         }
     lateinit var prnt: ViewGroup
+    lateinit var headerBinding : ItemHeaderBinding
+    lateinit var listener : View.OnClickListener
     var clicked = false
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -114,15 +119,8 @@ class ItemsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         private val viewBinding: ItemHeaderBinding
     ) : RecyclerView.ViewHolder(viewBinding.root) {
         init {
-            viewBinding.filterBtn.setOnClickListener() {
-                if (clicked) {
-                    viewBinding.filterBtn.setImageResource(R.drawable.ic_filter)
-                    clicked = false
-                } else {
-                    viewBinding.filterBtn.setImageResource(R.drawable.ic_filter_used)
-                    clicked = true
-                }
-            }
+            headerBinding = viewBinding
+            viewBinding.filterBtn.setOnClickListener(listener)
         }
         fun onBind(item: Item.Header) {
             viewBinding.header.text = item.title
