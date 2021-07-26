@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
+import ru.rorshak.profile.R
 import ru.rorshak.profile.databinding.*
 import ru.rorshak.profile.model.Item
 import java.lang.IllegalArgumentException
@@ -17,6 +18,7 @@ class ItemsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             notifyDataSetChanged()
         }
     lateinit var prnt: ViewGroup
+    var clicked = false
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         prnt = parent
@@ -70,7 +72,6 @@ class ItemsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             is Item.Header -> (holder as? ViewHolderHeader)?.onBind(item)
             is Item.withText -> (holder as? ViewHolderText)?.onBind(item)
             is Item.Skill -> (holder as? ViewHolderSkill)?.onBind(item)
-            is Item.Photo -> (holder as? ViewHolderPhoto)?.onBind()
         }
     }
 
@@ -101,7 +102,7 @@ class ItemsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     inner class ViewHolderPhoto(
         private val viewBinding: ItemPhotoBinding
     ) : RecyclerView.ViewHolder(viewBinding.root) {
-        fun onBind() {
+        init{
             viewBinding.button.setOnClickListener() {
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/rorShaK03"))
                 prnt.context.startActivity(intent)
@@ -109,9 +110,22 @@ class ItemsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         }
     }
 
-    class ViewHolderHeader(
+   inner class ViewHolderHeader(
         private val viewBinding: ItemHeaderBinding
     ) : RecyclerView.ViewHolder(viewBinding.root) {
+        init{
+            viewBinding.filterBtn.setOnClickListener(){
+                if(clicked) {
+                    viewBinding.filterBtn.setImageResource(R.drawable.ic_filter)
+                    clicked = false
+                }
+                else
+                {
+                    viewBinding.filterBtn.setImageResource(R.drawable.ic_filter_used)
+                    clicked = true
+                }
+            }
+        }
         fun onBind(item: Item.Header) {
             viewBinding.header.text = item.title
         }
