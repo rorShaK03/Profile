@@ -102,7 +102,7 @@ class ItemsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     inner class ViewHolderPhoto(
         private val viewBinding: ItemPhotoBinding
     ) : RecyclerView.ViewHolder(viewBinding.root) {
-        init{
+        init {
             viewBinding.button.setOnClickListener() {
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/rorShaK03"))
                 prnt.context.startActivity(intent)
@@ -110,17 +110,15 @@ class ItemsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         }
     }
 
-   inner class ViewHolderHeader(
+    inner class ViewHolderHeader(
         private val viewBinding: ItemHeaderBinding
     ) : RecyclerView.ViewHolder(viewBinding.root) {
-        init{
-            viewBinding.filterBtn.setOnClickListener(){
-                if(clicked) {
+        init {
+            viewBinding.filterBtn.setOnClickListener() {
+                if (clicked) {
                     viewBinding.filterBtn.setImageResource(R.drawable.ic_filter)
                     clicked = false
-                }
-                else
-                {
+                } else {
                     viewBinding.filterBtn.setImageResource(R.drawable.ic_filter_used)
                     clicked = true
                 }
